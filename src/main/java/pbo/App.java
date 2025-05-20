@@ -1,4 +1,7 @@
 package pbo;
+ 
+// 12S23042 - Pretty Maria
+// 12S23049 - Clarissa Manurung
 
 import java.util.*;
 
