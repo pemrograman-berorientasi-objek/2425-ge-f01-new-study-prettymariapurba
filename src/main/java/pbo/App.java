@@ -1,11 +1,6 @@
 package pbo;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 
 import pbo.model.Course;
 import pbo.model.Enrollment;
@@ -31,15 +26,21 @@ public class App {
                     String nim = parts[1];
                     String nama = parts[2];
                     String prodi = parts[3];
-                    students.put(nim, new Student(nim, nama, prodi));
+
+                    if (!students.containsKey(nim)) {
+                        students.put(nim, new Student(nim, nama, prodi));
+                    }
                     break;
 
                 case "course-add":
-                    String Kode = parts[1];
-                    String Nama = parts[2];
-                    int Semester = Integer.parseInt(parts[3]);
-                    int Kredit = Integer.parseInt(parts[4]);
-                    courses.put(Kode, new Course(Kode, Nama, Semester, Kredit));
+                    String kode = parts[1];
+                    String namaMatkul = parts[2];
+                    int semester = Integer.parseInt(parts[3]);
+                    int kredit = Integer.parseInt(parts[4]);
+
+                    if (!courses.containsKey(kode)) {
+                        courses.put(kode, new Course(kode, namaMatkul, semester, kredit));
+                    }
                     break;
 
                 case "enroll":
@@ -47,8 +48,19 @@ public class App {
                     String enrollKode = parts[2];
                     Student enrollStudent = students.get(enrollNim);
                     Course enrollCourse = courses.get(enrollKode);
+
                     if (enrollStudent != null && enrollCourse != null) {
-                        enrollments.add(new Enrollment(enrollStudent, enrollCourse));
+                        boolean alreadyEnrolled = false;
+                        for (Enrollment e : enrollments) {
+                            if (e.getStudent().getNim().equals(enrollNim) &&
+                                e.getCourse().getKode().equals(enrollKode)) {
+                                alreadyEnrolled = true;
+                                break;
+                            }
+                        }
+                        if (!alreadyEnrolled) {
+                            enrollments.add(new Enrollment(enrollStudent, enrollCourse));
+                        }
                     }
                     break;
 
@@ -57,20 +69,25 @@ public class App {
                     Student student = students.get(targetNim);
                     if (student != null) {
                         System.out.println(student.getNim() + "|" + student.getNama() + "|" + student.getProdi());
+
                         List<Course> studentCourses = new ArrayList<>();
                         for (Enrollment e : enrollments) {
                             if (e.getStudent().getNim().equals(targetNim)) {
                                 Course c = e.getCourse();
-                                if (c != null) studentCourses.add(c);
+                                if (c != null) {
+                                    studentCourses.add(c);
+                                }
                             }
                         }
-                        
+
                         studentCourses.sort(Comparator.comparing(Course::getKode));
+
                         for (Course c : studentCourses) {
                             System.out.println(c.getKode() + "|" + c.getNama() + "|" + c.getSemester() + "|" + c.getKredit());
                         }
                     }
                     break;
+
                 default:
                     break;
             }
