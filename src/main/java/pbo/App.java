@@ -32,6 +32,12 @@ public class App {
                     }
                     break;
 
+                case "student-show-all":
+                    for (Student student : students.values()) {
+                        System.out.println(student.getNim() + "|" + student.getNama() + "|" + student.getProdi());
+                    }
+                    break;
+
                 case "course-add":
                     String kode = parts[1];
                     String namaMatkul = parts[2];
@@ -40,6 +46,12 @@ public class App {
 
                     if (!courses.containsKey(kode)) {
                         courses.put(kode, new Course(kode, namaMatkul, semester, kredit));
+                    }
+                    break;
+
+                case "course-show-all":
+                    for (Course course : courses.values()) {
+                        System.out.println(course.getKode() + "|" + course.getNama() + "|" + course.getSemester() + "|" + course.getKredit());
                     }
                     break;
 
